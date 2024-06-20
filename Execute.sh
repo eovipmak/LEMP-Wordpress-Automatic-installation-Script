@@ -43,7 +43,6 @@ grant_user_privilege="GRANT ALL ON $db.* TO '$user'@'localhost'"
 }
 
 
-
 function choose_php_version {
 
 #Chon phien ban PHP mong muon, neu sai yeu cau nhap lai
