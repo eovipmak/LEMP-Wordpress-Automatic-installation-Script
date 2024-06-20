@@ -1,25 +1,27 @@
 #!/bin/bash
 
-function cap_nhat {
-sudo apt update -y && sudo apt upgrade -y
-sudo apt -y install expect
-sleep 1
-}
+
 
 function nhap_thong_tin {
+
+ #nhap ten mien
+
+ read -p "Nhap domain cua ban:" domain"
  #User wordpress mong muon
- read -p "Nhap User Wordpress muon tao: " user
- echo " "
- read -p "Nhap Database Wordpress muon tao: " db
- echo " "
+ read -p "
+Nhap User Wordpress muon tao: " user
+
+ read -p "
+Nhap Database Wordpress muon tao: " db
  
  while true; do
  
  #Password User Wordress
- echo " "
- read -sp "Nhap password cho user cua Wordpress: " pass1
- echo " " 
- read -sp "Nhap lai password: " pass2
+ read -sp "
+Nhap password cho user cua Wordpress: " pass1
+
+ read -sp "
+Nhap lai password: " pass2
  
  #Kiem tra nhap lai Password
  if [[ "$pass1" == "$pass2" ]]; then
@@ -29,7 +31,9 @@ function nhap_thong_tin {
  
  #Neu sai, yeu cau nhap lai
  else
-   echo "Mat khau khong khop, vui long thu lai!"
+   echo "
+Mat khau khong khop, vui long thu lai!
+"
  sleep 1
  
  fi
@@ -38,10 +42,13 @@ function nhap_thong_tin {
  
 #Cau lenh tao User va Databse cho Wordpress, se dung o phia duoi
 create_db="CREATE DATABASE $db DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci"
+
 create_wp_user="CREATE USER '$user'@'localhost' IDENTIFIED BY '$wp_db_pass'"
+
 grant_user_privilege="GRANT ALL ON $db.* TO '$user'@'localhost'"
 
 }
+
 
 
 function choose_php_version {
@@ -109,23 +116,47 @@ done
 
 }
 
+function cap_nhat {
 
+#Cap nhat va cai dat goi tin can thiet
+sudo apt update -y && sudo apt upgrade -y
+sudo apt -y install expect
+sleep 1
+}
+
+function install_apache2 {
+#Cai dat va khoi dong Apache2
+echo "
+Dang cai dat Apache 2, vui long doi.... 
+"
+
+sudo apt install apache2 -y
+systemctl enable apache2 && systemctl start apache2
+
+echo"
+Da cai dat thanh cong Apache2!
+"
+
+sleep 1
+
+}
 
 function install_php {
 #Them repository va cai dat php 
-echo "Dang cai dat PHP phien ban $php_v , vui long doi..."
+echo "
+Dang cai dat PHP phien ban $php_v , vui long doi...
+"
 sleep 1
 
 sudo add-apt-repository ppa:ondrej/php -y && sudo apt update
 sudo apt install $php_v -y
 
-echo "Da cai dat xong phien ban PHP $php_v, tiep theo la cai dat MariaDB! "
-
-echo " "
+echo "
+Da cai dat xong phien ban PHP $php_v!
+"
 
 sleep 1
 
-echo " "
 
 }
 
@@ -138,13 +169,12 @@ sleep 1
   sudo apt install mariadb-server mariadb-client -y
   systemctl enable mariadb && systemctl start mariadb
   
-echo "Da cai dat xong MariaDB, chuyen sang cau hinh! "
-
-echo " "
+echo "
+Da cai dat xong MariaDB! 
+"
 
 sleep 1
 
-echo " "
 
 }
 
@@ -184,13 +214,12 @@ expect eof
 echo "$SECURE_MYSQL"
 echo " 
 "
-echo "Hoan tat cau hinh MariaDB!"
-
-echo " "
+echo "
+Hoan tat cau hinh MariaDB!
+"
 
 sleep 1
 
-echo " "
 
 }
 
@@ -211,39 +240,107 @@ echo "Database: $db" >> $wp_log_install
 echo "Username: $user" >> $wp_log_install
 echo "Password: $wp_db_pass" >> $wp_log_install
  
-echo "Da tao xong User va Database cho Wordpress va luu thong tin vao $wp_log_install"
+echo "
+Da tao xong User va Database cho Wordpress va luu thong tin vao $wp_log_install
+"
 
-echo " "
 
 sleep 1
-
-echo " "
 
 }
 
 
-cap_nhat
+fuction install_wp {
 
+v_config="/etc/apache2/sites-available/mywebsite.conf"
+wget https://wordpress.org/latest.tar.gz
+
+tar zxvf latest.tar.gz -C /var/www/
+
+chown -R www-data. /var/www/wordpress
+
+rm latest.tar.gz
+
+echo "
+<VirtualHost *:80>
+    DocumentRoot /var/www/wordpress
+    ServerName $domain
+    ServerAlias www.$domain
+    ServerAdmin www.$domain/wp-admin
+    ErrorLog /var/log/apache2/mywebsite.error.log
+    CustomLog /var/log/apache2/mywebsite.access.log combined
+</VirtualHost>
+" >> $v_config
+
+sleep 1
+
+a2ensite mywebsite
+
+systemctl reload apache2
+
+sleep 1
+
+}
+
+function install_https {
+
+#Cai dat Let's Encrypt
+
+sudo apt install certbot python3-certbot-apache -y
+
+
+sudo certbot -d $domain -d www.$domain --non-interactive --agree-tos --register-unsafely-without-email
+
+sleep 1
+}
+
+function xuat_thong_tin {
+
+#Thong bao ket qua va xuat thong tin
+myip=$(hostname -I)
+
+echo " 
+Hoan tat qua trinh cai dat LAMP + Wordpress! Vui long:
+
+- Tao ban ghi A cho $domain $myip
+- Tao ban ghi A cho www.$domain $myip
+
+Sau khi hoan tat, truy cap https://$domain hoac https://www.$domain de su dung Wordpress.
+
+Thong tin ve Database va User duoc luu tai $wp_log_install .
+
+"
+
+}
 
 nhap_thong_tin
-
 
 
 choose_php_version
 
 
+cap_nhat
+
+
+install_apache2 
+
 
 install_php
-
 
 
 install_mariadb
 
 
-
 secure_mariadb
-
 
 
 create_wp_db
 
+
+install_wp
+
+
+install_https
+
+
+xuat_thong_tin
