@@ -2,7 +2,7 @@
 ## 1. Tải xuống bash file
 
 ```
-wget https://raw.githubusercontent.com/eovipmak/Ubuntu-22.04_LAMP-and-Wordpress-Automatic-Installation-Script/main/Excute.sh
+wget https://raw.githubusercontent.com/eovipmak/Ubuntu-22.04_LAMP-and-Wordpress-Automatic-Installation-Script/main/Execute.sh
 
 ```
 ## 2. Chạy file
