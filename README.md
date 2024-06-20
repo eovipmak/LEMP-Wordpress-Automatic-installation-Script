@@ -8,8 +8,8 @@ wget https://raw.githubusercontent.com/eovipmak/Ubuntu-22.04_LAMP-and-Wordpress-
 ## 2. Chạy file
 
 ```
-chmod +x Exưcute.sh
-bash Exưcute.sh
+chmod +x Execute.sh
+bash Execute.sh
 ```
 Quý khách nhập thông tin theo hướng dẫn trên màn hình, nếu xuất hiện bảng vui lòng nhấn Enter.
 
