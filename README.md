@@ -3,6 +3,7 @@
 
 ```
 wget https://raw.githubusercontent.com/eovipmak/Ubuntu-22.04_LAMP-and-Wordpress-Automatic-Installation-Script/main/Excute.sh
+
 ```
 ## 2. Chạy file
 
