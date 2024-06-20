@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 function nhap_thong_tin {
 
  #nhap ten mien
@@ -268,7 +266,7 @@ function install_https {
 sudo apt install certbot python3-certbot-apache -y
 
 
-sudo certbot --apache -d $domain -d www.$domain -n  --agree-tos -n
+sudo certbot  --apache --register-unsafely-without-email -n --agree-tos  -d $domain -d www.$domain 
 
 sleep 1
 
